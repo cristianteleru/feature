@@ -1,23 +1,24 @@
 <template>
-  <div class="main">
-    <!-- <span class="arrow-left"><span><</span></span> -->
-    <div class="feature--container">
+  <div id="main">
+    <span class="arrow-left" @click="goToLeft"><span><</span></span>
+    <!-- am adaugat v-if="events" pt ca nu se afisa nimic din view + watcher deep -->
+    <div class="feature--container" @scroll="scrolling" v-if="events">
       <ul class="year--container">
-        <li class="year-item" v-for="(year, key) in yearLabel">
+        <li class="year-item" v-for="(year, key) in yearLabel" :key="key">
           <span class="year-label">{{ key }}</span>
 
           <ul class="months--container">
-            <li class="month-item" v-for="(month, key) in year">
+            <li class="month-item" v-for="(month, key) in year" :key="key">
               <span class="month-label">{{ key | moment("MMM") }}</span>
 
               <ul class="events--container">
-                <li class="event--container" v-for="event in month">
+                <li class="event--container" v-for="(event, index) in month" :key="index">
                   <div class="event-item">
                     <div class="thumb--container">
                       <div class="thumb-overlay" 
                       :class="event.eventFlag" 
                       v-if="event.score || event.icon">
-                        <span class="thumb-info">{{ event.score || event.icon }}</span>
+                        <span class="thumb-info">{{ event.score || event.icon }} </span>
                       </div>
                       <img class="main-thumb" :class="event.eventFlag" :src="event.mainThumb">
                       <img class="sec-thumb" :class="event.eventFlag" :src="event.secThumb">
@@ -32,32 +33,53 @@
         </li>
       </ul>
     </div>
-    <!-- <span class="arrow-right" @click="goToRight"><span>></span></span> -->
+    <span class="arrow-right" @click="goToRight"><span>></span></span>
   </div>
 </template>
 
 <script>
-
 import eventList from '../assets/eventlist.json';
 
 export default {
   data() {
     return {
       yearLabel: {},
-      events: [],
+      events: {},
     };
   },
-  // created() {
-  //   debugger;
-  // },
+  watch: {
+    events: {
+      handler: () => {
+        console.log('watching');
+      },
+      deep: true,
+    },
+  },
   methods: {
     goToRight() {
-
+      this.$el.querySelector('.feature--container').scrollBy(300, 0);
     },
 
     goToLeft() {
+      this.$el.querySelector('.feature--container').scrollBy(-300, 0);
+    },
 
-    }
+    scrolling() {
+      console.log('scrolling1');
+    },
+
+    scrollToLatest() {
+      const parent = this.$el;
+      const el = this.$el.querySelector('.feature--container');
+      const xScrollWidth = parent.scrollWidth;
+      const xClientWidth = el.clientWidth;
+      const right = xScrollWidth - xClientWidth;
+      console.log('parent', parent);
+
+      console.log('xScrollWidth', xScrollWidth);
+      console.log('xClientWidth', xClientWidth);
+      this.$el.querySelector('.feature--container').scrollBy(right, 0);
+    },
   },
   mounted() {
     this.events = eventList;
@@ -78,6 +100,7 @@ export default {
       }
     });
     console.log(this.yearLabel);
+    this.scrollToLatest();
   },
 };
 </script>
@@ -85,9 +108,9 @@ export default {
 <style scoped lang="stylus">
 @import '../styles/style.styl';
 
-.main
+#main
   position relative
-  
+
 .feature--container
   overflow auto
   overflow-y hidden
