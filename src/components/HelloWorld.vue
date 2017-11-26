@@ -60,21 +60,12 @@ export default {
     },
 
     scrollToLatest() {
-      const parent = document.getElementById('main');
+      const parent = this.$el;
       const el = this.$el.querySelector('.feature--container');
-      // const xScrollWidth = parent.offsetWidth;
+      const xOffsetWidth = parent.offsetWidth;
       const xScrollWidth = el.scrollWidth;
-      // const right = xScrollWidth - xClientWidth;
-
-      // const scrollLeft = (window.pageXOffset !== undefined) ? window.pageXOffset : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
-
-      // console.log('scrollLeft', scrollLeft);
-
-      // console.log('right', right);
-
-      console.log('xScrollWidth', xScrollWidth);
-      // console.log('xClientWidth', xClientWidth);
-      // this.$el.querySelector('.feature--container').scrollBy(right, 0);
+      const right = xScrollWidth - xOffsetWidth;
+      this.$el.querySelector('.feature--container').scrollBy(right, 0);
     },
   },
   created() {
@@ -96,25 +87,6 @@ export default {
     console.log(this.yearLabel);
   },
   mounted() {
-    // this.events = eventList;
-
-    // this.events.forEach((ev) => {
-    //   const date = this.$moment(ev.eventDate);
-    //   if(date.year() in this.yearLabel) {
-    //     if(date.month() in this.yearLabel[date.year()]) {
-    //       // daca exista
-    //       this.yearLabel[date.year()][date.month()].push(ev);
-    //     } else {
-    //       // creez o lista noua de ev
-    //       this.yearLabel[date.year()][date.month()] = [ev];
-    //     }
-    //   } else {
-    //     this.yearLabel[date.year()] = {};
-    //     this.yearLabel[date.year()][date.month()] = [ev];
-    //   }
-    // });
-    // console.log(this.yearLabel);
-
     this.scrollToLatest();
   },
 };
