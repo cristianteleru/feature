@@ -1,8 +1,7 @@
 <template>
   <div id="main">
     <span class="arrow-left" @click="goToLeft"><span><</span></span>
-    <!-- am adaugat v-if="events" pt ca nu se afisa nimic din view + watcher deep -->
-    <div class="feature--container" @scroll="scrolling" v-if="events">
+    <div class="feature--container" @scroll="scrolling">
       <ul class="year--container">
         <li class="year-item" v-for="(year, key) in yearLabel" :key="key">
           <span class="year-label">{{ key }}</span>
@@ -44,16 +43,8 @@ export default {
   data() {
     return {
       yearLabel: {},
-      events: {},
+      events: eventList,
     };
-  },
-  watch: {
-    events: {
-      handler: () => {
-        console.log('watching');
-      },
-      deep: true,
-    },
   },
   methods: {
     goToRight() {
@@ -69,21 +60,24 @@ export default {
     },
 
     scrollToLatest() {
-      const parent = this.$el;
+      const parent = document.getElementById('main');
       const el = this.$el.querySelector('.feature--container');
-      const xScrollWidth = parent.scrollWidth;
-      const xClientWidth = el.clientWidth;
-      const right = xScrollWidth - xClientWidth;
-      console.log('parent', parent);
+      // const xScrollWidth = parent.offsetWidth;
+      const xScrollWidth = el.scrollWidth;
+      // const right = xScrollWidth - xClientWidth;
+
+      // const scrollLeft = (window.pageXOffset !== undefined) ? window.pageXOffset : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
+
+      // console.log('scrollLeft', scrollLeft);
+
+      // console.log('right', right);
 
       console.log('xScrollWidth', xScrollWidth);
-      console.log('xClientWidth', xClientWidth);
-      this.$el.querySelector('.feature--container').scrollBy(right, 0);
+      // console.log('xClientWidth', xClientWidth);
+      // this.$el.querySelector('.feature--container').scrollBy(right, 0);
     },
   },
-  mounted() {
-    this.events = eventList;
-
+  created() {
     this.events.forEach((ev) => {
       const date = this.$moment(ev.eventDate);
       if(date.year() in this.yearLabel) {
@@ -100,6 +94,27 @@ export default {
       }
     });
     console.log(this.yearLabel);
+  },
+  mounted() {
+    // this.events = eventList;
+
+    // this.events.forEach((ev) => {
+    //   const date = this.$moment(ev.eventDate);
+    //   if(date.year() in this.yearLabel) {
+    //     if(date.month() in this.yearLabel[date.year()]) {
+    //       // daca exista
+    //       this.yearLabel[date.year()][date.month()].push(ev);
+    //     } else {
+    //       // creez o lista noua de ev
+    //       this.yearLabel[date.year()][date.month()] = [ev];
+    //     }
+    //   } else {
+    //     this.yearLabel[date.year()] = {};
+    //     this.yearLabel[date.year()][date.month()] = [ev];
+    //   }
+    // });
+    // console.log(this.yearLabel);
+
     this.scrollToLatest();
   },
 };
@@ -112,7 +127,7 @@ export default {
   position relative
 
 .feature--container
-  overflow auto
+  overflow-x scroll
   overflow-y hidden
 
 .year--container,
