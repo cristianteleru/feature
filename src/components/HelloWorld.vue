@@ -1,6 +1,6 @@
 <template>
   <div id="main">
-    <span class="arrow-left" @click="goToLeft"><span><</span></span>
+    <span class="arrow-left" @click="goToLeft" v-show="isLeftVisible"><span><</span></span>
     <div class="feature--container" @scroll="scrolling">
       <ul class="year--container">
         <li class="year-item" v-for="(year, key) in yearLabel" :key="key">
@@ -32,7 +32,7 @@
         </li>
       </ul>
     </div>
-    <span class="arrow-right" @click="goToRight"><span>></span></span>
+    <span class="arrow-right" @click="goToRight" v-show="isRightVisible"><span>></span></span>
   </div>
 </template>
 
@@ -44,6 +44,8 @@ export default {
     return {
       yearLabel: {},
       events: eventList,
+      isLeftVisible: false,
+      isRightVisible: false,
     };
   },
   methods: {
@@ -56,7 +58,14 @@ export default {
     },
 
     scrolling() {
-      console.log('scrolling1');
+      const parent = this.$el;
+      const el = this.$el.querySelector('.feature--container');
+      const xOffsetWidth = parent.offsetWidth;
+      const xScrollWidth = el.scrollWidth;
+      const right = xScrollWidth - xOffsetWidth;
+      const xscrollLeft = el.scrollLeft;
+      xscrollLeft ? this.isLeftVisible = true : this.isLeftVisible = false;
+      xscrollLeft === right ? this.isRightVisible = false : this.isRightVisible = true;
     },
 
     scrollToLatest() {
@@ -84,7 +93,6 @@ export default {
         this.yearLabel[date.year()][date.month()] = [ev];
       }
     });
-    console.log(this.yearLabel);
   },
   mounted() {
     this.scrollToLatest();
